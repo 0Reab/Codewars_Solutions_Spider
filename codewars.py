@@ -1,21 +1,20 @@
 import requests
+import json
 import time
 import os
 
+from get_data import fetch_html
 from bs4 import BeautifulSoup
 
 
-''' Implement requests with cookie auth '''
+user = '' # Change this
+data_name = 'cookies.json'
 challenge_api = 'https://www.codewars.com/api/v1/code-challenges/'
-data_name = 'response.txt'
-user = ''
 url = f'https://www.codewars.com/users/{user}/completed_solutions'
-cookies = {'Cookie': r"remember_user_token=..."}
-snake = lambda y: y.replace(' ', '_') # wrapper -> converts string to snake_case
 
 
-def read_data(file=data_name) -> str:
-    # Text file reading
+
+def load_cookie(file=data_name) -> str:
     try:
         with open(file, 'r') as r:
             return r.read()
@@ -76,8 +75,10 @@ def cleanup_filename(file_name: str) -> str:
 
 def main():
     # cleanup main - too messy
+    snake = lambda y: y.replace(' ', '_')  # wrapper -> converts string to snake_case
+
     create_dirs() # prepare environment for file write
-    response = read_data() # txt file reading - will replace w/ http requests
+    response = fetch_html(url, load_cookie()) # txt file reading - will replace w/ http requests
 
     if response:
         solutions = parse(response) # use beautifulsoup
