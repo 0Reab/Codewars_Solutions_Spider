@@ -3,7 +3,7 @@ import json
 import time
 
 from file_ops import create_dirs, cleanup_filename, write_file
-from get_data import fetch_html
+from get_data import fetch_html, get_description
 from bs4 import BeautifulSoup
 
 
@@ -29,14 +29,6 @@ def parse(data):
     return soup.find_all('div', class_='list-item-solutions')
 
 
-def get_description(kata_id, api=challenge_api) -> str | None:
-    # fetch text description of coding challenges via API url and kata id num
-    time.sleep(0.5) # anti dos measures
-    resp = requests.get(api+kata_id)
-
-    if resp.status_code != 200: return None
-
-    return resp.json()['description']
 
 
 def main():
@@ -60,7 +52,7 @@ def main():
             if code:
                 file_name = cleanup_filename(f'{name}.{lang[:2]}')
                 file_path = f'{rank}/{file_name}'
-                description =  f"'''\n{get_description(kata_id)}\n'''\n\n"
+                description =  f"'''\n{get_description(kata_id, challenge_api)}\n'''\n\n"
                 contents = f'{description}{code}'
 
                 # debug lines

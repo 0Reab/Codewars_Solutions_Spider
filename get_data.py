@@ -1,3 +1,5 @@
+import requests
+
 from time import sleep
 from selenium import webdriver
 
@@ -33,3 +35,13 @@ def fetch_html(url, cookies) -> str:
     driver.quit()
 
     return raw_html
+
+
+def get_description(kata_id, api) -> str | None:
+    # fetch text description of coding challenges via API url and kata id num
+    sleep(0.5) # anti dos measures
+    resp = requests.get(api+kata_id)
+
+    if resp.status_code != 200: return None
+
+    return resp.json()['description']
