@@ -1,8 +1,8 @@
 import requests
 import json
 import time
-import os
 
+from file_ops import create_dirs, cleanup_filename, write_file
 from get_data import fetch_html
 from bs4 import BeautifulSoup
 
@@ -13,7 +13,6 @@ challenge_api = 'https://www.codewars.com/api/v1/code-challenges/'
 url = f'https://www.codewars.com/users/{user}/completed_solutions'
 
 
-
 def load_cookie(file=data_name) -> dict:
     try:
         with open(file, 'r') as r:
@@ -22,17 +21,6 @@ def load_cookie(file=data_name) -> dict:
         print(f'File not found {file}')
     except json.JSONDecodeError as e:
         print(f'Invalid JSON syntax: {e}')
-
-
-def create_dirs() -> None:
-    # create directories for each coding challenge difficulty + retired ones
-    try:
-        os.mkdir('Retired')
-        for n in range(1,8+1): os.mkdir(f'{n}_kyu')
-
-    except FileExistsError: print('Directory already exists')
-    except PermissionError: print('Permission denied unable to create directories'); exit(1)
-    except Exception as er: print(f'Error occurred {er}'); exit(1)
 
 
 def parse(data):
@@ -49,30 +37,6 @@ def get_description(kata_id, api=challenge_api) -> str | None:
     if resp.status_code != 200: return None
 
     return resp.json()['description']
-
-
-def write_file(path, text) -> True | False:
-    # Write content to a file in a given path
-    try:
-        with open(path, 'w', encoding='utf-8') as file:
-            os.utime(path, None)
-            file.write(text)
-            return True
-
-    except FileExistsError:
-        print(f'File already exists {path}')
-    except Exception as err:
-        print(f'Failed to write to {path}, {err}')
-
-    return  False
-
-
-def cleanup_filename(file_name: str) -> str:
-    # remove illegal windows filename characters
-    illegal_characters = [
-        '#', '%', '&', '{', '}', '\\', '<', '>', '*', '?', '/', ' ', '$', '!', "'", '"', ':', '@', '+', '`', '|', '=',
-    ]
-    return ''.join([ char for char in file_name if char not in illegal_characters ])
 
 
 def main():
