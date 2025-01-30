@@ -8,8 +8,9 @@ from bs4 import BeautifulSoup
 ''' Implement requests with cookie auth '''
 challenge_api = 'https://www.codewars.com/api/v1/code-challenges/'
 data_name = 'response.txt'
-# url = 'url_here'
-# cookies = 'c'
+user = ''
+url = f'https://www.codewars.com/users/{user}/completed_solutions'
+cookies = {'Cookie': r"remember_user_token=..."}
 snake = lambda y: y.replace(' ', '_') # wrapper -> converts string to snake_case
 
 
