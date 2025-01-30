@@ -3,5 +3,6 @@ Codewars API at the moment does not have a functionality to fetch solutions to c
 
 Usage:
 0. `pip install -r requrements.txt`
-1. Put cookie from request header into 'raw' variable as string and run `format_cookie.py`
-2. Run codewars.py 
+1. Change the user variable in codewars.py to your username.
+3. Put cookie from request header into 'raw' variable as string and run `format_cookie.py`
+4. Run codewars.py 

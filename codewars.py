@@ -22,8 +22,8 @@ def parse(data):
 
 
 def main():
-    user = ''  # Change this
-    file_name = 'cookies.json'
+    user = 'Reab9'  # Change this
+    file_name = 'cookie.json'
     challenge_api = 'https://www.codewars.com/api/v1/code-challenges/'
     url = f'https://www.codewars.com/users/{user}/completed_solutions'
 
@@ -48,16 +48,11 @@ def main():
                 file_name = cleanup_filename(f'{name}.{lang[:2]}')
                 file_path = f'{rank}/{file_name}'
                 description =  f"'''\n{get_description(kata_id, challenge_api)}\n'''\n\n"
-                contents = f'{description}{code}'
+                # description = 'lolol'
 
                 # debug lines
-                #description = 'lolol'
-                #contents = f'{description}{code}'
-
-                #if file_path == '6_kyu/Decode_the_Morse_code_.py':
-                #    description =  f"'''\n{get_description(kata_id)}\n'''\n\n" # get_description(kata_id) -> works good
-                #    contents = f'{description}{code}'
-                # end debug lines
+                contents = f'{description}{code}'
+                print(f'writing file -> {file_path}')
 
                 write_file(file_path, contents)
 
