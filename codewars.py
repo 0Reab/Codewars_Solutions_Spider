@@ -1,36 +1,18 @@
-import requests
-import time
-import os
+import json
 
+from file_ops import create_dirs, cleanup_filename, write_file
+from get_data import fetch_html, get_description
 from bs4 import BeautifulSoup
 
 
-''' Implement requests with cookie auth '''
-challenge_api = 'https://www.codewars.com/api/v1/code-challenges/'
-data_name = 'response.txt'
-# url = 'url_here'
-# cookies = 'c'
-snake = lambda y: y.replace(' ', '_') # wrapper -> converts string to snake_case
-
-
-def read_data(file=data_name) -> str:
-    # Text file reading
+def load_cookie(file) -> dict:
     try:
         with open(file, 'r') as r:
-            return r.read()
+            return json.loads(r.read()) # dictionary
     except FileNotFoundError:
         print(f'File not found {file}')
-
-
-def create_dirs() -> None:
-    # create directories for each coding challenge difficulty + retired ones
-    try:
-        os.mkdir('Retired')
-        for n in range(1,8+1): os.mkdir(f'{n}_kyu')
-
-    except FileExistsError: print('Directory already exists')
-    except PermissionError: print('Permission denied unable to create directories'); exit(1)
-    except Exception as er: print(f'Error occurred {er}'); exit(1)
+    except json.JSONDecodeError as e:
+        print(f'Invalid JSON syntax: {e}')
 
 
 def parse(data):
@@ -39,44 +21,17 @@ def parse(data):
     return soup.find_all('div', class_='list-item-solutions')
 
 
-def get_description(kata_id, api=challenge_api) -> str | None:
-    # fetch text description of coding challenges via API url and kata id num
-    time.sleep(0.5) # anti dos measures
-    resp = requests.get(api+kata_id)
-
-    if resp.status_code != 200: return None
-
-    return resp.json()['description']
-
-
-def write_file(path, text) -> True | False:
-    # Write content to a file in a given path
-    try:
-        with open(path, 'w', encoding='utf-8') as file:
-            os.utime(path, None)
-            file.write(text)
-            return True
-
-    except FileExistsError:
-        print(f'File already exists {path}')
-    except Exception as err:
-        print(f'Failed to write to {path}, {err}')
-
-    return  False
-
-
-def cleanup_filename(file_name: str) -> str:
-    # remove illegal windows filename characters
-    illegal_characters = [
-        '#', '%', '&', '{', '}', '\\', '<', '>', '*', '?', '/', ' ', '$', '!', "'", '"', ':', '@', '+', '`', '|', '=',
-    ]
-    return ''.join([ char for char in file_name if char not in illegal_characters ])
-
-
 def main():
+    user = 'Reab9'  # Change this
+    file_name = 'cookie.json'
+    challenge_api = 'https://www.codewars.com/api/v1/code-challenges/'
+    url = f'https://www.codewars.com/users/{user}/completed_solutions'
+
     # cleanup main - too messy
+    snake = lambda y: y.replace(' ', '_')  # wrapper -> converts string to snake_case
+
     create_dirs() # prepare environment for file write
-    response = read_data() # txt file reading - will replace w/ http requests
+    response = fetch_html(url, load_cookie(file_name)) # txt file reading - will replace w/ http requests
 
     if response:
         solutions = parse(response) # use beautifulsoup
@@ -92,19 +47,14 @@ def main():
             if code:
                 file_name = cleanup_filename(f'{name}.{lang[:2]}')
                 file_path = f'{rank}/{file_name}'
-                description =  f"'''\n{get_description(kata_id)}\n'''\n\n"
-                contents = f'{description}{code}'
+                description =  f"'''\n{get_description(kata_id, challenge_api)}\n'''\n\n"
+                # description = 'lolol'
 
                 # debug lines
-                #description = 'lolol'
-                #contents = f'{description}{code}'
+                contents = f'{description}{code}'
+                print(f'writing file -> {file_path}')
 
-                #if file_path == '6_kyu/Decode_the_Morse_code_.py':
-                #    description =  f"'''\n{get_description(kata_id)}\n'''\n\n" # get_description(kata_id) -> works good
-                #    contents = f'{description}{code}'
-                # end debug lines
-
-                write_file(file_path, contents) # bug - can't create filenames with char '?' -> fixed
+                write_file(file_path, contents)
 
 
 if __name__ == '__main__':
