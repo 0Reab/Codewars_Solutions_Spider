@@ -14,12 +14,14 @@ url = f'https://www.codewars.com/users/{user}/completed_solutions'
 
 
 
-def load_cookie(file=data_name) -> str:
+def load_cookie(file=data_name) -> dict:
     try:
         with open(file, 'r') as r:
-            return r.read()
+            return json.loads(r.read()) # dictionary
     except FileNotFoundError:
         print(f'File not found {file}')
+    except json.JSONDecodeError as e:
+        print(f'Invalid JSON syntax: {e}')
 
 
 def create_dirs() -> None:
