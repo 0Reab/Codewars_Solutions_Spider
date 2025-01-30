@@ -1,4 +1,6 @@
-raw = 'cookie from request header' # change me - enter cookie as string
+import json
+
+raw = 'cookie from https request header' # change me
 cookie = {}
 
 for line in raw.split(';'):
@@ -9,4 +11,5 @@ for line in raw.split(';'):
 
     cookie[key] = value
 
-print(cookie) # write to cookie.json
+with open('cookie.json', 'w') as file:
+    json.dump(cookie, file, indent=4)
