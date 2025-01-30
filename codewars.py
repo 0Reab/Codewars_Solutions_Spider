@@ -1,19 +1,11 @@
-import requests
 import json
-import time
 
 from file_ops import create_dirs, cleanup_filename, write_file
 from get_data import fetch_html, get_description
 from bs4 import BeautifulSoup
 
 
-user = '' # Change this
-data_name = 'cookies.json'
-challenge_api = 'https://www.codewars.com/api/v1/code-challenges/'
-url = f'https://www.codewars.com/users/{user}/completed_solutions'
-
-
-def load_cookie(file=data_name) -> dict:
+def load_cookie(file) -> dict:
     try:
         with open(file, 'r') as r:
             return json.loads(r.read()) # dictionary
@@ -29,14 +21,17 @@ def parse(data):
     return soup.find_all('div', class_='list-item-solutions')
 
 
-
-
 def main():
+    user = ''  # Change this
+    file_name = 'cookies.json'
+    challenge_api = 'https://www.codewars.com/api/v1/code-challenges/'
+    url = f'https://www.codewars.com/users/{user}/completed_solutions'
+
     # cleanup main - too messy
     snake = lambda y: y.replace(' ', '_')  # wrapper -> converts string to snake_case
 
     create_dirs() # prepare environment for file write
-    response = fetch_html(url, load_cookie()) # txt file reading - will replace w/ http requests
+    response = fetch_html(url, load_cookie(file_name)) # txt file reading - will replace w/ http requests
 
     if response:
         solutions = parse(response) # use beautifulsoup
@@ -64,7 +59,7 @@ def main():
                 #    contents = f'{description}{code}'
                 # end debug lines
 
-                write_file(file_path, contents) # bug - can't create filenames with char '?' -> fixed
+                write_file(file_path, contents)
 
 
 if __name__ == '__main__':
