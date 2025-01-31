@@ -3,19 +3,21 @@ import os
 
 def create_dirs() -> None:
     # create directories for each coding challenge difficulty + retired ones
+    def mkdir(x):
+        if not os.path.exists(x): os.mkdir(x)
     try:
-        os.mkdir('Retired')
-        for n in range(1,8+1): os.mkdir(f'{n}_kyu')
+        mkdir('Retired')
+        for n in range(1,8+1): mkdir(f'{n}_kyu')
 
-    except FileExistsError: print('Directory already exists')
-    except PermissionError: print('Permission denied unable to create directories'); exit(1)
-    except Exception as er: print(f'Error occurred {er}'); exit(1)
+    except FileExistsError: print(f'Directory already exists')
+    except PermissionError: print(f'Permission denied unable to create directories'); exit(1)
+    except Exception as e: print(f'Error occurred: {e}'); exit(1)
 
 
 def cleanup_filename(file_name: str) -> str:
     # remove illegal windows filename characters
     illegal_characters = [
-        '#', '%', '&', '{', '}', '\\', '<', '>', '*', '?', '/', ' ', '$', '!', "'", '"', ':', '@', '+', '`', '|', '=',
+        '#', '%', '&', '{', '}', '\\', '<', '>', '*', '?', '/', ' ', '$', '!', "'", '"', ':', '@', '+', '`', '|', '=', '(', ')', '^'
     ]
     return ''.join([ char for char in file_name if char not in illegal_characters ])
 

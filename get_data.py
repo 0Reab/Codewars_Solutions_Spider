@@ -4,7 +4,7 @@ from time import sleep
 from selenium import webdriver
 
 
-def fetch_html(url, cookies) -> str:
+def fetch_html(url, cookies) -> str | None:
     options = webdriver.FirefoxOptions()
     options.add_argument("--headless")
     driver = webdriver.Firefox(options=options)
@@ -15,6 +15,11 @@ def fetch_html(url, cookies) -> str:
         driver.add_cookie({"name": name, "value": value, "domain": ".codewars.com"})
 
     driver.get(url)
+
+    # check for error
+    if 'Page not found' in driver.page_source or driver.current_url != url:
+        driver.quit()
+        return None
 
 
     # scrolling to load all dynamically loaded data
@@ -44,4 +49,4 @@ def get_description(kata_id, api) -> str | None:
 
     if resp.status_code != 200: return None
 
-    return resp.json()['description']
+    return resp.json().get('description')
