@@ -22,7 +22,7 @@ def parse(data):
 
 
 def main():
-    user = 'Reab9'  # Change this
+    user = 'your_username_here'  # Change this
     file_name = 'cookie.json'
     challenge_api = 'https://www.codewars.com/api/v1/code-challenges/'
     url = f'https://www.codewars.com/users/{user}/completed_solutions'
@@ -58,4 +58,5 @@ def main():
 
 
 if __name__ == '__main__':
+
     main()
