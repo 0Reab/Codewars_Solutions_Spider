@@ -4,7 +4,7 @@ Codewars API at the moment does not have a functionality to fetch solutions to c
 
 ## Desciption
 
-Headless selenium web browsing to load fetch dynamically loaded content and then parse it via beatiful soup.<br>
+Headless selenium web browsing to fetch dynamically loaded content and then parse it via beatiful soup.<br>
 Completes missing API feature to fetch your codewars challenge solutions.
 
 ## Output
